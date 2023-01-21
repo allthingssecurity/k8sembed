@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>Text Generator</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">
+        <img src="logo.png" alt="Logo">
+      </div>
+      <div class="input-section">
+        <textarea id="inputText" placeholder="Enter text here"></textarea>
+        <button onclick="getText()">Answer</button>
+      </div>
+      <div class="output-section">
+        <h2>Answer:</h2>
+        <div id="output"></div>
+      </div>
+    </div>
+    <script>
+        async function getText() {
+            const inputText = document.getElementById("inputText").value;
+            const response = await fetch("http://localhost:5000/generate_text", {
+                method: "POST",
+                body: JSON.stringify({ input_text: inputText }),
+                headers: { "Content-Type": "application/json" },
+            });
+            const json = await response.json();
+            const text = json.text;
+            const output = document.getElementById("output");
+            let i = 0;
+			output.innerHTML="";
+            const interval = setInterval(() => {
+                output.innerHTML += text[i];
+                i++;
+                if (i === text.length) {
+                  clearInterval(interval);
+                }
+            }, 50);
+        }
+    </script>
+  </body>
+</html>
